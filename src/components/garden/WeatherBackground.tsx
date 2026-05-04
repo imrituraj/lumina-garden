@@ -5,12 +5,12 @@ import type { WeatherState } from '../../store/useStore';
 
 const Raindrops = memo(() => {
   // Generate 50 vertical raindrops
-  const drops = Array.from({ length: 50 }).map((_, i) => ({
+  const [drops] = useState(() => Array.from({ length: 50 }).map((_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
     animationDuration: `${0.5 + Math.random() * 0.5}s`,
     animationDelay: `${Math.random() * 2}s`
-  }));
+  })));
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -35,13 +35,13 @@ const Raindrops = memo(() => {
 });
 
 const HeatHaze = memo(() => {
-  const particles = Array.from({ length: 20 }).map((_, i) => ({
+  const [particles] = useState(() => Array.from({ length: 20 }).map((_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
     top: `${Math.random() * 100}%`,
     size: 20 + Math.random() * 60,
     duration: 10 + Math.random() * 10
-  }));
+  })));
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -15,39 +15,9 @@ const QuizEngine: React.FC = () => {
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const [selectedWrongOption, setSelectedWrongOption] = useState<number | null>(null);
+  const [prevSubjectId, setPrevSubjectId] = useState(activeQuizSubjectId);
 
-  const subject = subjects.find(s => s.id === activeQuizSubjectId);
-  const question = SAMPLE_QUESTIONS[currentQuestionIdx];
-
-  useEffect(() => {
-    if (!activeQuizSubjectId) {
-      setCurrentQuestionIdx(0);
-      setSelectedWrongOption(null);
-    }
-  }, [activeQuizSubjectId]);
-
-  if (!activeQuizSubjectId || !subject) return null;
-
-  const handleOptionClick = (idx: number) => {
-    if (idx === question.answer) {
-      // Correct!
-      triggerParticles();
-      recordCorrectAnswer(subject.id);
-      
-      // Next question or loop
-      setTimeout(() => {
-        setCurrentQuestionIdx((prev) => (prev + 1) % SAMPLE_QUESTIONS.length);
-        setSelectedWrongOption(null);
-      }, 600);
-    } else {
-      // Incorrect
-      setSelectedWrongOption(idx);
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 400); // Shake duration
-    }
-  };
-
-  const triggerParticles = () => {
+  const triggerParticles = useCallback(() => {
     const duration = 1000;
     const end = Date.now() + duration;
 
@@ -72,7 +42,39 @@ const QuizEngine: React.FC = () => {
       }
     };
     frame();
+  }, []);
+
+  if (activeQuizSubjectId !== prevSubjectId) {
+    setPrevSubjectId(activeQuizSubjectId);
+    setCurrentQuestionIdx(0);
+    setSelectedWrongOption(null);
+  }
+
+  const subject = subjects.find(s => s.id === activeQuizSubjectId);
+  const question = SAMPLE_QUESTIONS[currentQuestionIdx];
+
+  if (!activeQuizSubjectId || !subject) return null;
+
+  const handleOptionClick = (idx: number) => {
+    if (idx === question.answer) {
+      // Correct!
+      triggerParticles();
+      recordCorrectAnswer(subject.id);
+      
+      // Next question or loop
+      setTimeout(() => {
+        setCurrentQuestionIdx((prev) => (prev + 1) % SAMPLE_QUESTIONS.length);
+        setSelectedWrongOption(null);
+      }, 600);
+    } else {
+      // Incorrect
+      setSelectedWrongOption(idx);
+      setIsShaking(true);
+      setTimeout(() => setIsShaking(false), 400); // Shake duration
+    }
   };
+
+
 
   const shakeVariants = {
     shake: { x: [-10, 10, -10, 10, 0], transition: { duration: 0.4 } },
