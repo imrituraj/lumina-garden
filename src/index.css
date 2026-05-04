@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222.2 47.4% 11.2%; /* Deep dark slate */
+    --foreground: 210 40% 98%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Outfit', system-ui, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-2xl border border-white/10 shadow-glass rounded-[2rem];
+    /* Adding subtle top highlight for depth */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  }
+  
+  .clay-btn {
+    @apply bg-gradient-to-r from-teal-500 to-emerald-400 text-white shadow-btn border border-white/20 rounded-full hover:shadow-btn-hover hover:-translate-y-1 transition-all duration-300 active:scale-95 active:translate-y-0 font-medium tracking-wide;
+  }
+  
+  /* Adding a very subtle noise texture overlay class if needed later */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+}
