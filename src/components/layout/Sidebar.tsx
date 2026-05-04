@@ -1,13 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Leaf, Store, Globe2, Sparkles } from 'lucide-react';
+import { Leaf, Store, Globe2, Sparkles, BookOpen } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 const Sidebar: React.FC = () => {
-  const { totalXP } = useStore();
+  const { totalXP, toggleAlmanac } = useStore();
 
   const navItems = [
     { icon: Leaf, label: "My Garden", active: true },
+    { icon: BookOpen, label: "Almanac", active: false, onClick: toggleAlmanac },
     { icon: Store, label: "Seed Shop", active: false },
     { icon: Globe2, label: "Global Forest", active: false },
   ];
@@ -33,6 +34,7 @@ const Sidebar: React.FC = () => {
             return (
               <button 
                 key={index}
+                onClick={item.onClick}
                 className={`relative flex items-center justify-center lg:justify-start gap-4 px-4 py-4 rounded-2xl transition-all duration-300 group overflow-hidden ${
                   item.active 
                     ? 'text-white' 

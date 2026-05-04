@@ -6,6 +6,7 @@ import type { WeatherState } from '../../store/useStore';
 import PlantComponent from './PlantComponent';
 import StudyTimer from '../timer/StudyTimer';
 import GlobalForestBar from './GlobalForestBar';
+import RootNetwork from './RootNetwork';
 
 const WeatherIcon = ({ state }: { state: WeatherState }) => {
   switch (state) {
@@ -19,7 +20,7 @@ const WeatherIcon = ({ state }: { state: WeatherState }) => {
 };
 
 const GardenDashboard: React.FC = () => {
-  const { subjects, startQuiz, checkWiltStatus, cityName, weatherState, getWateringEfficiency } = useStore();
+  const { subjects, startQuiz, checkWiltStatus, cityName, weatherState, getWateringEfficiency, isRootViewActive, toggleRootView } = useStore();
   const efficiency = getWateringEfficiency();
 
   useEffect(() => {
@@ -51,15 +52,31 @@ const GardenDashboard: React.FC = () => {
           <p className="text-white/70 font-light text-lg">Study to sustain. Nurture your knowledge.</p>
         </div>
         
-        {/* Live Weather Widget */}
-        <div className="glass-panel px-5 py-3.5 flex items-center gap-5 shrink-0 rounded-full">
-          <div className="flex items-center gap-2.5 text-white/90 border-r border-white/20 pr-5">
-            <MapPin size={18} className="text-teal-400" />
-            <span className="text-sm font-medium tracking-wide">{cityName}</span>
+        <div className="flex items-center gap-4">
+          {/* View Roots Toggle */}
+          <div className="glass-panel px-4 py-3 rounded-full flex items-center gap-3">
+            <span className="text-sm font-medium text-white/90 tracking-wide">Root View</span>
+            <button 
+              onClick={toggleRootView}
+              className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${isRootViewActive ? 'bg-teal-500' : 'bg-white/10'}`}
+            >
+              <motion.div 
+                className="w-4 h-4 bg-white rounded-full absolute top-1"
+                animate={{ left: isRootViewActive ? 'calc(100% - 1.25rem)' : '0.25rem' }}
+                transition={{ type: "spring", stiffness: 500, damping: 30 }}
+              />
+            </button>
           </div>
-          <div className="flex items-center gap-2.5">
-            <WeatherIcon state={weatherState} />
-            <span className="text-sm font-medium text-white/90 capitalize tracking-wide">{weatherState.toLowerCase()}</span>
+
+          <div className="glass-panel px-5 py-3.5 flex items-center gap-5 shrink-0 rounded-full">
+            <div className="flex items-center gap-2.5 text-white/90 border-r border-white/20 pr-5">
+              <MapPin size={18} className="text-teal-400" />
+              <span className="text-sm font-medium tracking-wide">{cityName}</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <WeatherIcon state={weatherState} />
+              <span className="text-sm font-medium text-white/90 capitalize tracking-wide">{weatherState.toLowerCase()}</span>
+            </div>
           </div>
         </div>
       </header>
@@ -81,17 +98,21 @@ const GardenDashboard: React.FC = () => {
         </motion.div>
       )}
 
+      {/* Root Network SVG Canvas */}
+      <RootNetwork />
+
       <motion.div 
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-20"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-20 relative z-10"
       >
         {subjects.map((subject) => (
           <motion.div 
             key={subject.id}
+            data-subject-id={subject.id}
             variants={itemVariants}
-            className="glass-panel p-8 flex flex-col items-center justify-between group relative"
+            className={`glass-panel p-8 flex flex-col items-center justify-between group relative transition-all duration-500 ${isRootViewActive ? 'blur-[2px] opacity-40 hover:blur-none hover:opacity-100' : ''}`}
           >
             {/* Subject Header */}
             <div className="w-full flex justify-between items-center mb-8">

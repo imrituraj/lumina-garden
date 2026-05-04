@@ -6,6 +6,7 @@ import ZenAudio from './components/audio/ZenAudio';
 import WeatherBackground from './components/garden/WeatherBackground';
 import ActivityFeed from './components/garden/ActivityFeed';
 import PollenEffect from './components/garden/PollenEffect';
+import AlmanacModal from './components/almanac/AlmanacModal';
 import { useStore } from './store/useStore';
 import { initLiveWeatherMirror, fetchWeatherByCity } from './services/WeatherService';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -82,6 +83,8 @@ function App() {
           </AnimatePresence>
         </div>
 
+        {/* Almanac Modal Overlay */}
+        <AlmanacModal />
       </main>
     </div>
   );
