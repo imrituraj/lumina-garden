@@ -11,7 +11,7 @@ const SAMPLE_QUESTIONS = [
 ];
 
 const QuizEngine: React.FC = () => {
-  const { activeQuizSubjectId, endQuiz, recordCorrectAnswer, subjects } = useStore();
+  const { activeQuizSubjectId, endQuiz, recordCorrectAnswer, subjects, resetStreak } = useStore();
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
   const [isShaking, setIsShaking] = useState(false);
   const [selectedWrongOption, setSelectedWrongOption] = useState<number | null>(null);
@@ -68,6 +68,7 @@ const QuizEngine: React.FC = () => {
       }, 600);
     } else {
       // Incorrect
+      resetStreak();
       setSelectedWrongOption(idx);
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 400); // Shake duration

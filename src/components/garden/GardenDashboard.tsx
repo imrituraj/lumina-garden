@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore';
 import type { WeatherState } from '../../store/useStore';
 import PlantComponent from './PlantComponent';
 import StudyTimer from '../timer/StudyTimer';
+import GlobalForestBar from './GlobalForestBar';
 
 const WeatherIcon = ({ state }: { state: WeatherState }) => {
   switch (state) {
@@ -42,6 +43,8 @@ const GardenDashboard: React.FC = () => {
 
   return (
     <div className="w-full h-full px-6 lg:px-12 py-10 overflow-y-auto">
+      <GlobalForestBar />
+      
       <header className="mb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
           <h1 className="text-[2.75rem] font-semibold text-white mb-2 tracking-tight drop-shadow-md">Your Garden</h1>

@@ -4,6 +4,8 @@ import GardenDashboard from './components/garden/GardenDashboard';
 import QuizEngine from './components/quiz/QuizEngine';
 import ZenAudio from './components/audio/ZenAudio';
 import WeatherBackground from './components/garden/WeatherBackground';
+import ActivityFeed from './components/garden/ActivityFeed';
+import PollenEffect from './components/garden/PollenEffect';
 import { useStore } from './store/useStore';
 import { initLiveWeatherMirror, fetchWeatherByCity } from './services/WeatherService';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -31,6 +33,12 @@ function App() {
       
       {/* Background Visual Layer */}
       <WeatherBackground />
+
+      {/* Global Particle Effects */}
+      <PollenEffect />
+
+      {/* Global Activity Feed */}
+      <ActivityFeed />
 
       {/* Audio Layer */}
       <ZenAudio />

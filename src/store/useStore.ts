@@ -30,6 +30,16 @@ interface AppState {
   recordCorrectAnswer: (subjectId: string) => void;
   checkWiltStatus: () => void;
   
+  // Phase 2: Pollen & Global Forest
+  globalForestHealth: number;
+  goldenHourActive: boolean;
+  pollenReleaseTrigger: number;
+  consecutiveCorrectAnswers: number;
+  incrementGlobalForestHealth: (amount: number) => void;
+  triggerGoldenHour: () => void;
+  releasePollen: () => void;
+  resetStreak: () => void;
+  
   // Environment Actions
   setWeather: (state: WeatherState, city: string) => void;
   setCityName: (city: string) => void;
@@ -52,6 +62,32 @@ export const useStore = create<AppState>((set, get) => ({
   cityName: 'Unknown Location',
   isMuted: false,
 
+  globalForestHealth: 15,
+  goldenHourActive: false,
+  pollenReleaseTrigger: 0,
+  consecutiveCorrectAnswers: 0,
+
+  incrementGlobalForestHealth: (amount) => set((state) => {
+    let newHealth = state.globalForestHealth + amount;
+    if (newHealth >= 100 && !state.goldenHourActive) {
+      get().triggerGoldenHour();
+      newHealth = 100;
+    }
+    return { globalForestHealth: newHealth };
+  }),
+
+  triggerGoldenHour: () => {
+    set({ goldenHourActive: true });
+    // 10 minutes buff
+    setTimeout(() => {
+      set({ goldenHourActive: false, globalForestHealth: 0 });
+    }, 10 * 60 * 1000);
+  },
+
+  releasePollen: () => set((state) => ({ pollenReleaseTrigger: state.pollenReleaseTrigger + 1 })),
+  
+  resetStreak: () => set({ consecutiveCorrectAnswers: 0 }),
+
   addXP: (amount) => set((state) => ({ totalXP: state.totalXP + amount })),
   
   startQuiz: (subjectId) => set({ activeQuizSubjectId: subjectId }),
@@ -67,8 +103,14 @@ export const useStore = create<AppState>((set, get) => ({
   },
   
   recordCorrectAnswer: (subjectId) => set((state) => {
-    const efficiency = get().getWateringEfficiency();
+    let efficiency = get().getWateringEfficiency();
+    if (state.goldenHourActive) {
+      efficiency *= 2; // Golden hour double growth
+    }
+
     const progressGain = 1 * efficiency;
+    const newStreak = state.consecutiveCorrectAnswers + 1;
+    const shouldReleasePollen = newStreak > 0 && newStreak % 5 === 0;
     
     const updatedSubjects = state.subjects.map(subject => {
       if (subject.id === subjectId) {
@@ -101,7 +143,9 @@ export const useStore = create<AppState>((set, get) => ({
 
     return { 
       subjects: updatedSubjects,
-      totalXP: state.totalXP + 10
+      totalXP: state.totalXP + 10,
+      consecutiveCorrectAnswers: newStreak,
+      pollenReleaseTrigger: shouldReleasePollen ? state.pollenReleaseTrigger + 1 : state.pollenReleaseTrigger
     };
   }),
 
