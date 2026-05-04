@@ -4,6 +4,7 @@ import { Play, Droplets, MapPin, Sun, CloudRain, CloudLightning, Moon, Cloud, Za
 import { useStore } from '../../store/useStore';
 import type { WeatherState } from '../../store/useStore';
 import PlantComponent from './PlantComponent';
+import StudyTimer from '../timer/StudyTimer';
 
 const WeatherIcon = ({ state }: { state: WeatherState }) => {
   switch (state) {
@@ -132,6 +133,11 @@ const GardenDashboard: React.FC = () => {
             </div>
           </motion.div>
         ))}
+
+        {/* Study Timer Card */}
+        <motion.div variants={itemVariants}>
+          <StudyTimer />
+        </motion.div>
       </motion.div>
     </div>
   );
